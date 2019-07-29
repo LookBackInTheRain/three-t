@@ -13,13 +13,13 @@ function initThree() {
 let camera;
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-    camera.position.x = 0;
-    camera.position.y = 1000;
-    camera.position.z = 0;
+    camera.position.x = 700;
+    camera.position.y = 200;
+    camera.position.z = 700;
 
-    camera.up.x = 0;
+    /*camera.up.x = 0;
     camera.up.y = 0;
-    camera.up.z = 1;
+    camera.up.z = 1;*/
 
     console.log(camera);
 
@@ -38,32 +38,64 @@ function initLight() {
     scene.add(light);
 }
 
-let line;
+
 function initObject() {
 
     let geometry = new THREE.Geometry();
-    let material = new THREE.LineBasicMaterial( { vertexColors: true, linewidth: 20000 } );
-    let color1 = new THREE.Color( 0x444444 ), color2 = new THREE.Color( 0xFF0000 );
 
     // 线的材质可以由2点的颜色决定
-    let p1 = new THREE.Vector3( -100, 0, 100 );
-    let p2 = new THREE.Vector3(  100, 0, -100 );
+    let p1 = new THREE.Vector3( -500, 0, 0 );
+    let p2 = new THREE.Vector3(  500, 0, 0 );
     geometry.vertices.push(p1);
     geometry.vertices.push(p2);
-    geometry.colors.push( color1, color2 );
+
+    for (let i=0;i<=20;i++){
+
+        if (i===10){
+            continue
+        }
+        let line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 }), THREE.LineSegments );
+        line.position.z=(i*50)-500;
+        scene.add(line);
+
+        let line1 = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 }), THREE.LineSegments );
+        line1.position.x=(i*50)-500;
+        line1.rotation.y = Math.PI/2;
+        scene.add(line1);
+
+
+    }
+
+
+    let geometry_x = new THREE.Geometry();
+
+
+    let point_1 = new THREE.Vector3(-700,0,0);
+    let point_2 = new THREE.Vector3(700,0,0);
+
+    geometry_x.vertices.push(point_1,point_2)
 
 
 
-    line = new THREE.Line( geometry, material, THREE.LineSegments );
-    scene.add(line);
+
+    let x=new THREE.Line(geometry_x,new THREE.LineBasicMaterial({color:0xFD7A3C}),THREE.LineSegments);
+    let y=new THREE.Line(geometry_x,new THREE.LineBasicMaterial({color:0xFD7A3C}),THREE.LineSegments)
+    y.rotation.y = Math.PI/2
+    let z=new THREE.Line(geometry_x,new THREE.LineBasicMaterial({color:0xFD7A3C}),THREE.LineSegments)
+    z.rotation.z = Math.PI/2
+
+
+    scene.add(x);
+    scene.add(y);
+    scene.add(z);
+
+
+
 }
 
 function render() {
     requestAnimationFrame(render)
-    camera.position.y +=1
-    /*if (camera.position.x>=width/2){
-        camera.position.x = 0
-    }*/
+    scene.rotation.y+=0.002
     renderer.render(scene, camera);
 }
 
