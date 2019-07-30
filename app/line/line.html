@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>line</title>
-    <script type="application/javascript" src="../../libs/three.js"></script>
+    <script type="application/javascript" src="../../libs/threejs/three.js"></script>
+    <script type="application/javascript" src="../../libs/threejs/libs/stats.min.js"></script>
+    <script type="application/javascript" src="../../libs/threejs/loaders/GLTFLoader.js"></script>
+    <script type="application/javascript" src="../../libs/threejs/controls/OrbitControls.js"></script>
     <script type="application/javascript" src="line.js"></script>
+
 
     <style type="text/css">
         div#canvas-frame {
@@ -13,6 +17,13 @@
             width: 100%;
             height: 1000px;
             background-color: beige;
+            position: relative;
+        }
+
+        .statsClass {
+            position: absolute;
+            left: 0;
+            top: 0;
         }
 
     </style>
