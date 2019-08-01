@@ -114,6 +114,11 @@ function initCube() {
 
     scene.add(cube);
 
+    cube.addEventListener("mousedown",(event)=>{
+        console.log(event)
+    })
+
+
 
 }
 
@@ -159,7 +164,16 @@ function loadGLB() {
 }
 
 function onMove() {
-    
+
+    document.addEventListener("click",(event)=>{
+
+        event.preventDefault();
+
+        console.log(event)
+
+    },false)
+
+
 }
 
 
@@ -171,10 +185,13 @@ function initController() {
 function render() {
     stats.update()
     requestAnimationFrame(render)
-    scene.rotation.y += 0.002
+    //scene.rotation.y += 0.002
     renderer.render(scene, camera);
 
 }
+
+
+
 
 function threeStart() {
 
@@ -189,5 +206,7 @@ function threeStart() {
     initController();
 
     render();
+
+    onMove();
 
 }
