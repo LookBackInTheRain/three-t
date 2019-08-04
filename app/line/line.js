@@ -19,7 +19,7 @@ let camera;
 
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000);
-    camera.position.set(700,200,700)
+    camera.position.set(700, 200, 700)
 
     /*camera.up.x = 0;
     camera.up.y = 0;
@@ -62,7 +62,8 @@ function initLine() {
         }
         let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({
             color: 0x000000,
-            opacity: 0.2
+            opacity: 0.2,
+            linewidth: 0.1
         }), THREE.LineSegments);
         line.position.z = (i * 50) - 500;
         scene.add(line);
@@ -114,10 +115,9 @@ function initCube() {
 
     scene.add(cube);
 
-    cube.addEventListener("mousedown",(event)=>{
+    cube.addEventListener("mousedown", (event) => {
         console.log(event)
     })
-
 
 
 }
@@ -148,13 +148,13 @@ function loadGLB() {
         function (data) {
 
             data.scene.traverse(function (child) {
-                if (child instanceof THREE.Mesh){
-                        child.addEventListener("on")
-                } 
+                if (child instanceof THREE.Mesh) {
+                    child.addEventListener("on")
+                }
             })
 
-            data.scene.scale.set(100,100,100)
-            data.scene.position.set(100,50,100)
+            data.scene.scale.set(100, 100, 100)
+            data.scene.position.set(100, 50, 100)
             scene.add(data.scene)
         }, function (pre) {
 
@@ -163,34 +163,90 @@ function loadGLB() {
         });
 }
 
-function onMove() {
+let rayCaster;
+let vector2 ;
 
-    document.addEventListener("click",(event)=>{
+function onClick() {
+
+    rayCaster = new THREE.Raycaster();
+    vector2 = new THREE.Vector2();
+
+    window.addEventListener("click", (event) => {
 
         event.preventDefault();
 
-        console.log(event)
+        vector2.x = (event.clientX / window.innerWidth) * 2 - 1;
+        vector2.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    },false)
+        rayCaster.setFromCamera(vector2, camera);
+
+        let intersects = rayCaster.intersectObjects(scene.children);
+
+        console.log(intersects);
+
+        for (let i = 0; i < intersects.length; i++) {
+            let obj = intersects[i].object;
+            if (obj instanceof THREE.Line) {
+                console.log("line:", obj)
+                obj.material.color.set(0xF50D2A);
+            }
+
+            if (obj instanceof THREE.Mesh) {
+                console.log("mesh", obj)
+            }
+
+            //intersects[i].object.material.color.set(0xF50025)
+        }
+
+
+    }, false)
 
 
 }
 
 
+function onMove() {
+
+    window.addEventListener("click",(event=>{
+
+        let vector2 = new THREE.Vector2();
+        let rayCaster = new THREE.Raycaster();
+
+        vector2.x = (event.clientX/window.innerWidth) * 2 - 1;
+        vector2.y  = - (event.clientY/window.innerHeight) * +1;
+
+        rayCaster.setFromCamera(vector2,camera);
+
+        let geometry  = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3())
+        let pointMaterial = new THREE.PointsMaterial({color:0xF5425E,size:2});
+        let point  = new THREE.Points(geometry)
+
+
+
+    }))
+
+}
+
+
+
 function initController() {
-    let controller = new THREE.OrbitControls(camera,renderer.document)
+    let controller = new THREE.OrbitControls(camera, renderer.document)
 
 }
 
 function render() {
     stats.update()
+
+
+
     requestAnimationFrame(render)
     //scene.rotation.y += 0.002
     renderer.render(scene, camera);
 
+    rayCaster.setFromCamera(vector2, camera);
+
 }
-
-
 
 
 function threeStart() {
@@ -204,9 +260,9 @@ function threeStart() {
     initCube();
     loadGLB();
     initController();
+    onClick();
 
     render();
 
-    onMove();
 
 }
