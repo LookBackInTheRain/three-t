@@ -11,6 +11,7 @@ function initThree() {
         antialias: true
     });
     renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio)
     container.appendChild(renderer.domElement);
     renderer.setClearColor(0xFFF0F5, 1.0);
 }
@@ -20,14 +21,7 @@ let camera;
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000);
     camera.position.set(700, 200, 700)
-
-    /*camera.up.x = 0;
-    camera.up.y = 0;
-    camera.up.z = 1;*/
-
-    console.log(camera);
-
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(scene.position);
 }
 
 let scene;
@@ -122,6 +116,12 @@ function initCube() {
 
 }
 
+function onWindowResize() {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( container.clientWidth,container.clientHeight );
+}
+
 // 性能监视
 let stats;
 
@@ -171,12 +171,17 @@ function onClick() {
     rayCaster = new THREE.Raycaster();
     vector2 = new THREE.Vector2();
 
-    window.addEventListener("click", (event) => {
+    rayCaster.linePrecision = 3;
+
+    container.addEventListener("click", (event) => {
 
         event.preventDefault();
 
-        vector2.x = (event.clientX / window.innerWidth) * 2 - 1;
-        vector2.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        console.log(camera.position)
+
+
+        vector2.x = (event.clientX / container.clientWidth) * 2 - 1;
+        vector2.y = -(event.clientY / container.clientHeight) * 2 + 1;
 
         rayCaster.setFromCamera(vector2, camera);
 
@@ -189,14 +194,21 @@ function onClick() {
             if (obj instanceof THREE.Line) {
                 console.log("line:", obj)
                 obj.material.color.set(0xF50D2A);
+                break
             }
 
             if (obj instanceof THREE.Mesh) {
                 console.log("mesh", obj)
+                break
             }
 
-            //intersects[i].object.material.color.set(0xF50025)
+            console.log("other",obj)
+
+
+
         }
+
+        console.log(vector2)
 
 
     }, false)
@@ -207,18 +219,19 @@ function onClick() {
 
 function onMove() {
 
-    window.addEventListener("click",(event=>{
+    container.addEventListener("click",(event=>{
+
 
         let vector2 = new THREE.Vector2();
         let rayCaster = new THREE.Raycaster();
 
-        vector2.x = (event.clientX/window.innerWidth) * 2 - 1;
-        vector2.y  = - (event.clientY/window.innerHeight) * +1;
+        vector2.x = (event.clientX/container.innerWidth) * 2 - 1;
+        vector2.y  = - (event.clientY/container.innerHeight) * +1;
 
         rayCaster.setFromCamera(vector2,camera);
 
         let geometry  = new THREE.Geometry();
-        geometry.vertices.push(new THREE.Vector3())
+        geometry.vertices.push(new THREE.Vector3());
         let pointMaterial = new THREE.PointsMaterial({color:0xF5425E,size:2});
         let point  = new THREE.Points(geometry)
 
@@ -231,20 +244,19 @@ function onMove() {
 
 
 function initController() {
-    let controller = new THREE.OrbitControls(camera, renderer.document)
-
+    let controller = new THREE.OrbitControls(camera,container)
 }
 
 function render() {
     stats.update()
-
-
 
     requestAnimationFrame(render)
     //scene.rotation.y += 0.002
     renderer.render(scene, camera);
 
     rayCaster.setFromCamera(vector2, camera);
+
+    camera.updateProjectionMatrix();
 
 }
 
@@ -253,15 +265,15 @@ function threeStart() {
 
     initThree();
     initStats();
-    initCamera();
     initScene();
+    initCamera();
     initLight();
     initLine();
     initCube();
     loadGLB();
     initController();
     onClick();
-
+    window.addEventListener( 'resize', onWindowResize, false );
     render();
 
 
