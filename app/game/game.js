@@ -96,7 +96,7 @@ function initThree() {
     initPreviewCube();
     initPlane();
     initRenderer();
-    //initController();
+    initController();
     initBrick();
     initLight();
     window.addEventListener("mousemove", onMove, false);
@@ -125,7 +125,7 @@ function onMove(event) {
             .addScalar(50);
     }
 
-    render();
+    //render();
 
 }
 
@@ -162,13 +162,12 @@ function onClick(event) {
         }
     }
 
-    render();
+    //render();
 
 
 }
 
 function onKeyDown(event) {
-    console.log(event)
     switch (event.keyCode) {
         case 16 :
             isClear = true;
@@ -192,9 +191,9 @@ function onWindowResize() {
 
 
 function render() {
-    //requestAnimationFrame(render)
+    requestAnimationFrame(render)
     renderer.render(scene, camera);
-    //controller.update()
+    controller.update()
 }
 
 function start() {
