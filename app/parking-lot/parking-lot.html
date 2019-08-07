@@ -5,12 +5,35 @@
     <title>parking lot</title>
     <script type="application/javascript" src="../../libs/threejs/three.js"></script>
     <script type="application/javascript" src="../../libs/threejs/libs/stats.min.js"></script>
+    <script type="application/javascript" src="../../libs/threejs/libs/tween.min.js"></script>
     <script type="application/javascript" src="../../libs/threejs/loaders/GLTFLoader.js"></script>
     <script type="application/javascript" src="../../libs/threejs/controls/OrbitControls.js"></script>
     <script type="application/javascript" src="parking-lot.js"></script>
     <link rel="stylesheet"  href="../css/main.css"/>
+    <style>
+        div.plane{
+            position: absolute;
+            width: 100px;
+            height: 300px;
+            left: 10px;
+            top: 100px;
+            border: 1px solid rebeccapurple;
+        }
+
+        button{
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body onload="start()">
-
+    <div class="plane">
+        <button onclick="entrancePoint()">入口</button>
+        <button onclick="exitPoint1()">出口一</button>
+        <button onclick="exitPoint2()">出口二</button>
+    </div>
 </body>
 </html>

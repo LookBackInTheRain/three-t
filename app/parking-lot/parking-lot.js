@@ -14,6 +14,8 @@ let objects = [];
 let plane, brickGeometry, brickMaterial, isClear;
 
 
+let entrancePole,exitPole1,exitPole2;
+
 // 初始化场景
 function initScene() {
     scene = new THREE.Scene();
@@ -23,7 +25,7 @@ function initScene() {
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
     // 相机位置
-    camera.position.set(500, 800, 1300);
+    camera.position.set(-1400, 800, 100);
     // 相机看向的位置
     camera.lookAt(0, 0, 0);
 }
@@ -33,7 +35,7 @@ function initRenderer() {
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0xFFF0F5, 1.0);
+    renderer.setClearColor(0xFFFFFF, 1.0);
     document.body.appendChild(renderer.domElement)
 }
 
@@ -45,11 +47,11 @@ function initGridHelper() {
 
 // 绘制平面
 function initPlane() {
-    let geometry = new THREE.PlaneBufferGeometry(2000, 2000);
+    let geometry = new THREE.PlaneBufferGeometry(40, 100);
 
-    geometry.rotateX(-Math.PI / 2);
+    //geometry.rotateX(-Math.PI / 2);
 
-    plane = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({visible: false}));
+    plane = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color:0x44000A,visible:true}));
     scene.add(plane);
     objects.push(plane);
 }
@@ -79,7 +81,7 @@ function initLight() {
 function loadModel() {
 
     let loader = new THREE.GLTFLoader();
-    loader.load("../../models/parking-lot.glb",
+    loader.load("../../models/t2.glb",
         (item) => {
 
             item.scene.traverse(function (child) {
@@ -87,14 +89,16 @@ function loadModel() {
                     objects.push(child)
                 }
             })
-            item.scene.scale.set(20, 20, 20);
 
+            item.scene.scale.set(18, 18, 18);
 
             let box = new THREE.Box3();
             box.expandByObject(item.scene);
 
+
             let center = new THREE.Vector3();
             box.getCenter(center);
+
 
 
             item.scene.position.x = item.scene.position.x - center.x;
@@ -112,6 +116,20 @@ function loadModel() {
 }
 
 
+function initPole() {
+    let geometry = new THREE.CylinderBufferGeometry(2,2,150,1000);
+    let material = new THREE.MeshBasicMaterial({color:0xffffff,map: new THREE.TextureLoader().load("../../imgs/pole.jpg")});
+
+    entrancePole = new THREE.Mesh(geometry,material);
+
+    entrancePole.position.set(-570,100,580);
+    //entrancePole.position.set(-570,60,600);
+    //entrancePole.rotateX(Math.PI/2);
+    entrancePole.rotateOnAxis(new THREE.Vector3(-1,0,0).normalize(),Math.PI/2);
+    scene.add(entrancePole);
+}
+
+
 function initThree() {
     rayCaster = new THREE.Raycaster();
     vector2 = new THREE.Vector2();
@@ -125,6 +143,7 @@ function initThree() {
     initLight();
     loadModel();
     initAxesHelper();
+    initPole();
    // window.addEventListener("mousemove", onMove, false);
     window.addEventListener("mousedown", onClick, false);
    // window.addEventListener("keydown", onKeyDown, false);
@@ -171,8 +190,11 @@ function onClick(event) {
         // 第一个与射线相交的几何体
         let intersect = intersects[0];
 
-        let geometry=intersect.object.geometry;
-        console.log(geometry)
+        let material=intersect.object.material;
+
+        //material.color.set(0xFA0000);
+
+        console.log(material)
 
 
     }
@@ -204,11 +226,31 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+function entrancePoint() {
+
+    new TWEEN.Tween(camera.position)
+        .to({x:-1400,y:400,z:800},4000).start();
+
+}
+
+function exitPoint1() {
+    new TWEEN.Tween(camera.position)
+        .to({x:800,y:500,z:1400},4000).start();
+}
+
+
+
+
+function exitPoint2() {
+    new TWEEN.Tween(camera.position)
+        .to({x:-1400,y:500,z:-800},4000).start();
+}
 
 function render() {
     requestAnimationFrame(render)
     renderer.render(scene, camera);
     controller.update()
+    TWEEN.update()
 }
 
 function start() {
