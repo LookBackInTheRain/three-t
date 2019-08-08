@@ -9,31 +9,57 @@
     <script type="application/javascript" src="../../libs/threejs/loaders/GLTFLoader.js"></script>
     <script type="application/javascript" src="../../libs/threejs/controls/OrbitControls.js"></script>
     <script type="application/javascript" src="parking-lot.js"></script>
-    <link rel="stylesheet"  href="../css/main.css"/>
-    <style>
-        div.plane{
-            position: absolute;
-            width: 100px;
-            height: 300px;
-            left: 10px;
-            top: 100px;
-            border: 1px solid rebeccapurple;
-        }
-
-        button{
-            width: 100%;
-            height: 60px;
-            line-height: 60px;
-            margin-top: 5px;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="./main.css"/>
 </head>
-<body onload="start()">
-    <div class="plane">
-        <button onclick="entrancePoint()">入口</button>
-        <button onclick="exitPoint1()">出口一</button>
-        <button onclick="exitPoint2()">出口二</button>
+<body onload="loadModel()">
+<div class="plane-1">
+    <table>
+        <tr>
+            <td style="width: 30px;margin-top: 5px">
+                <h5 class="text">辅<br>助</h5>
+            </td>
+            <td> <button class="btn-1" onclick="statsHelperStatus()">性能指标</button></td>
+            <td> <button class="btn-1" onclick="gridHelperStatus()">网格辅助</button></td>
+            <td> <button class="btn-1" onclick="axesHelperStatus()">坐标辅助</button></td>
+        </tr>
+    </table>
+
+
+</div>
+<div class="plane">
+    <h5 class="text">视角切换</h5>
+    <div>
+        <button class="btn-1" onclick="entrancePoint()">入口</button>
+        <button class="btn-1" onclick="exitPoint1()">出口一</button>
+        <button class="btn-1" onclick="exitPoint2()">出口二</button>
     </div>
+    <hr>
+    <h5 class="text">出入控制</h5>
+
+    <div>
+        <button class="btn-2" onclick="entranceChangeStatus()">
+            入口 <span id="entrance">(开启)</span>
+        </button>
+        <button class="btn-2" onclick="exit1ChangeStatus()">
+            出口一 <span id="exit1">(开启)</span>
+        </button>
+        <button class="btn-2" onclick="exit2ChangeStatus()">
+            出口二 <span id="exit2">(开启)</span>
+        </button>
+    </div>
+    <br>
+</div>
+<div id="stats-container"></div>
+
+<div class="load-container" id="load-container">
+    <div>
+        <div  class="load">
+            <div id="load"></div>
+        </div>
+        <h5 style="text-align: center">模型加载中......</h5>
+    </div>
+</div>
+
 </body>
+
 </html>
